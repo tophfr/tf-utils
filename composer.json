@@ -1,0 +1,23 @@
+{
+    "name": "tf/utils",
+    "type": "library",
+    "description": "",
+    "keywords": ["truncate","html","content"],
+    "homepage": "http://lib.tf",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "toph",
+            "email": "toph@toph.fr"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.2.6",
+        "ext-xmlreader": "*",
+        "tf/string": "*"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}
