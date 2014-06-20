@@ -2,7 +2,7 @@
     "name": "tf/utils",
     "type": "library",
     "description": "",
-    "keywords": ["truncate","html","content"],
+    "keywords": ["truncate","html","content","resize","crop","rotate","image"],
     "homepage": "http://lib.tf",
     "license": "GPL-2.0+",
     "authors": [
@@ -14,7 +14,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.2.6",
-        "ext-xmlreader": "*",
+        "tf/image": "*",
         "tf/string": "*"
     },
     "autoload": {

@@ -24,7 +24,7 @@
  */
 
 if (!defined('TF_IMAGE_ERROR_IMAGE_PATH')) {
-    define('TF_IMAGE_ERROR_IMAGE_PATH', TF_IMAGE_DIR . 'error.png');
+    define('TF_IMAGE_ERROR_IMAGE_PATH', dirname(dirname(dirname(__FILE__))).'/resources/error.png');
 }
 if (!defined('TF_IMAGE_DEFAULT_QUALITY')) {
     define('TF_IMAGE_DEFAULT_QUALITY', 85);
