@@ -226,6 +226,8 @@ class TfUtils
             $tf->free();
         }
 
+        self::trigPostTreatments($out);
+
         if ($oldMemoryLimit) {
             unset($tf);
             ini_set('memory_limit', $oldMemoryLimit);
@@ -252,6 +254,34 @@ class TfUtils
     {
         if (self::getLogCallBack()) {
             call_user_func(self::getLogCallBack(), $message);
+        }
+    }
+
+    /**
+     * @var array
+     */
+    private static $postTreatmentFunctions = array();
+
+    /**
+     * @param closure $closure
+     */
+    public static function addPostTreatmentFunction($closure) {
+        self::$postTreatmentFunctions[] = $closure;
+    }
+
+    /**
+     *
+     */
+    public static function emptyPostTreatmentFunctions() {
+        self::$postTreatmentFunctions = array();
+    }
+
+    /**
+     * @param string $filePath
+     */
+    public static function trigPostTreatments($filePath) {
+        foreach (self::$postTreatmentFunctions as $closure) {
+            call_user_func($closure, $filePath);
         }
     }
 
