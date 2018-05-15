@@ -203,6 +203,17 @@ class TfUtils
             self::mkdirR(dirname($out));
         }
 
+        $lock = fopen($out . '.lock', 'w');
+        if (!$lock) {
+        	// can't open dest file
+        	return false;
+        }
+        if (!flock($lock, LOCK_EX | LOCK_NB)) {
+        	// resize already in progress
+        	return true;
+        }
+        $tmpfile = tempnam(dirname($out), basename($out));
+
         if (self::$memoryLimit) {
             $oldMemoryLimit = ini_get('memory_limit');
             ini_set('memory_limit', self::$memoryLimit);
@@ -218,15 +229,22 @@ class TfUtils
         } else {
             $tf->setLogCallBack(self::getLogCallBack());
             $tf->addFiltersByString($options);
-            if ($tf->storeFile($out, null, $quality)) {
+            if ($tf->storeFile($tmpfile, null, $quality)) {
                 $return = true;
             } else {
-                self::log("TfImage::storeFile($out) => TfErrno={$tf->errno}");
+                self::log("TfImage::storeFile($tmpfile) => TfErrno={$tf->errno}");
             }
             $tf->free();
         }
 
-        self::trigPostTreatments($out);
+        if ($return) {
+	        self::trigPostTreatments($tmpfile);
+			$return = rename($tmpfile, $out);
+        }
+
+        flock($lock, LOCK_UN);
+        fclose($lock);
+        @unlink($out . '.lock');
 
         if ($oldMemoryLimit) {
             unset($tf);
