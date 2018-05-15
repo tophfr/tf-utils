@@ -205,14 +205,14 @@ class TfUtils
 
         $lock = fopen($out . '.lock', 'w');
         if (!$lock) {
-        	// can't open dest file
-        	return false;
+            // can't open dest file
+            return false;
         }
         if (!flock($lock, LOCK_EX | LOCK_NB)) {
-        	// resize already in progress
-        	return true;
+            // resize already in progress
+            return true;
         }
-        $tmpfile = tempnam(dirname($out), basename($out));
+        $tmpfile = tempnam(dirname($out), basename($out) . '.');
 
         if (self::$memoryLimit) {
             $oldMemoryLimit = ini_get('memory_limit');
@@ -238,8 +238,13 @@ class TfUtils
         }
 
         if ($return) {
-	        self::trigPostTreatments($tmpfile);
-			$return = rename($tmpfile, $out);
+            self::trigPostTreatments($tmpfile);
+            $return = rename($tmpfile, $out);
+            if (!$return) {
+                self::log("couldn't do rename($tmpfile, $out)");
+            }
+        } elseif (file_exists($tmpfile)) {
+            @unlink($tmpfile);
         }
 
         flock($lock, LOCK_UN);
